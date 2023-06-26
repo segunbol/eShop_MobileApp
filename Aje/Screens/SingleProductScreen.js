@@ -18,15 +18,20 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { connect } from 'react-redux';
 import { Path, Svg } from "react-native-svg";
 import AuthGlobal from "../Context/store/AuthGlobal";
+import * as actions from "../Redux/Actions/cartActions";
 
-function SingleProductScreen({props}) {
+
+function SingleProductScreen(props) {
   const route = useRoute();
   const [datas, setDatas] = useState(route.params.datas);
   const context = useContext(AuthGlobal)
 
+
+  
   const handleOnPress = () => {
     if (context.stateUser.isAuthenticated === true) {
-      navigation.navigate("Cart");
+      () => {props.addItemToCart(props)};
+      
     } else {
       navigation.navigate("User Profile")
     }
@@ -110,7 +115,7 @@ function SingleProductScreen({props}) {
           </Text>
         </HStack>
         <Buttone
-          onPress={() => handleOnPress()}
+          onPress={ () => {props.addItemToCart(props)} }
           bg={Colors.main}
           color={Colors.white}
           mt={10}
@@ -123,12 +128,12 @@ function SingleProductScreen({props}) {
   );
 }
 
-// const mapToDispatchToProps = (dispatch) => {
-//   return {
-//       addItemToCart: (product) => 
-//           dispatch(actions.addToCart({quantity: 1, product}))
-//   }
-// } connect(null, mapToDispatchToProps)
+const mapToDispatchToProps = (dispatch) => {
+  return {
+      addItemToCart: (product) => 
+          dispatch(actions.addToCart({quantity: 1, product}))
+  }
+} 
 
 
-export default SingleProductScreen;
+export default connect(null, mapToDispatchToProps)(SingleProductScreen);

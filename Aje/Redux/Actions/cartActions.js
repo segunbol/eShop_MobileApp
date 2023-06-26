@@ -12,6 +12,7 @@ export const addToCart = (payload) => {
 }
 
 export const removeFromCart = (payload) => {
+    console.log("E Press")
     return {
         type: REMOVE_FROM_CART,
         payload

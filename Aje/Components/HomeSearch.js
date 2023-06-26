@@ -1,6 +1,7 @@
 import { Box, HStack, Input, Pressable, Text } from "native-base";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import Colors from "../color";
 
 function HomeSearch() {
   const navigation = useNavigation()
@@ -32,14 +33,15 @@ function HomeSearch() {
           position="absolute"
           top={-13}
           left={2}
-          bg={"red"}
+          bg={Colors.red}
           _text={{
-            color: "red",
+            color: Colors.black,
             fontSize: "11px",
           }}
         >
-          {" "}
+          
           5
+          
         </Box>
       </Pressable>
     </HStack>

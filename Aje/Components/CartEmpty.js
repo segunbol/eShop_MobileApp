@@ -3,8 +3,10 @@ import React from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import Buttone from "./Buttone";
 import Colors from "../color";
+import { useNavigation } from "@react-navigation/native";
 
 const CartEmpty = () => {
+  const navigation = useNavigation()
   return (
     <Box flex={1} px={2}>
       <Center h="90%">
@@ -14,10 +16,11 @@ const CartEmpty = () => {
         <Text color={Colors.main} bold mt={5}>
           CART IS EMPTY
         </Text>
-      </Center>
-      <Buttone bg={Colors.black} color={Colors.white}>
+        <Buttone mt={10} bg={Colors.black} color={Colors.white}>
         START SHOPPING
-      </Buttone>
+        </Buttone>
+      </Center>
+      
     </Box>
   );
 }
