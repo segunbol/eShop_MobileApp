@@ -13,7 +13,7 @@ import HomeScreen from "./Screens/HomeScreen";
 import { Provider } from "react-redux";
 // Context API
 import Auth from "./Context/store/Auth";
-import store from "./Redux/store";
+import store, { StoreProvider } from "./Redux/store";
 import Login from "./Screens/User/Login";
 
 const Stack = createNativeStackNavigator();
@@ -21,7 +21,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <Auth>
-      <Provider store={store}>
+      <StoreProvider>
         <NativeBaseProvider>
           <NavigationContainer>
             <StatusBar hidden={true} />
@@ -37,7 +37,7 @@ export default function App() {
               </Stack.Navigator>
           </NavigationContainer>
         </NativeBaseProvider>
-      </Provider>
+      </StoreProvider>
         
     </Auth>
     

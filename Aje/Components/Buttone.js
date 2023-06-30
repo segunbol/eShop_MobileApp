@@ -1,7 +1,7 @@
 import { Button } from "native-base";
 import React from "react";
 
-function Buttone({mt, bg, color, children, onPress}) {
+function Buttone({ mt, bg, color, children, onPress }) {
   return (
     <Button
       w="full"
@@ -14,7 +14,7 @@ function Buttone({mt, bg, color, children, onPress}) {
         fontWeight: "bold",
       }}
       _pressed={{ bg: bg }}
-      onPress={onPress} 
+      onPress={onPress}
     >
       {children}
     </Button>

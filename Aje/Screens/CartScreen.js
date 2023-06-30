@@ -19,45 +19,35 @@ import { useNavigation } from "@react-navigation/native";
 
 import { connect } from "react-redux";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import baseURL from "../assets/common/baseUrl";
-import * as actions from "../Redux/Actions/cartActions";
+
+import { Store } from "../Redux/store";
 
 const CartScreen = (props) => {
-  const [productUpdate, setProductUpdate] = useState();
-  const [totalPrice, setTotalPrice] = useState();
-  useEffect(() => {
-    getProducts();
-    return () => {
-      setProductUpdate();
-      setTotalPrice();
-    };
-  }, [props]);
-  // 643fa7fd9e96a4b3a9c6594c
-
-  const getProducts = () => {
-    var products = [];
-    props.cartItems.forEach((cart) => {
-      const id = cart.product.route.params.datas._id;
-      console.log(id);
-      axios
-        .get(`${baseURL}products/${id}`)
-        .then((data) => {
-          products.push(data.data);
-          setProductUpdate(products);
-          var total = 0;
-          products.forEach((product) => {
-            const price = (total += product.price);
-            setTotalPrice(price);
-          });
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    });
-  };
-
   const navigation = useNavigation();
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const {cart: { cartItems },} = state;
+  const removeItemHandler = (data) => {
+    ctxDispatch({ type: 'CART_REMOVE_ITEM', payload: data })
+  }
+  const hiddenItem = ({ item }) => (
+    <Pressable
+      w={50}
+      roundedTopRight={10}
+      roundedBottomRight={10}
+      h={90}
+      ml="auto"
+      justifyContent="center"
+      bg={Colors.red}
+      onPress={() => removeItemHandler(item)}
+    >
+      <Center alignItems="center" space={2}>
+        <FontAwesome name="trash" size={24} color={Colors.white} />
+      </Center>
+    </Pressable>
+  );
+
   return (
     <Box flex={1} bg={Colors.mainLight}>
       {/* Header */}
@@ -69,7 +59,7 @@ const CartScreen = (props) => {
       {/* CART ITEMS*/}
       {/* IF CART IS EMPTY
        */}
-      {productUpdate ? (
+      {cartItems.length ? (
         <>
           <Box mr={6}>
             <SwipeListView
@@ -77,26 +67,9 @@ const CartScreen = (props) => {
               previewRowKey="0"
               previewOpenValue={-40}
               previewOpenDelay={3000}
-              data={productUpdate}
+              data={cartItems}
               renderItem={renderItem}
-              renderHiddenItem={(data) => (
-                <Pressable
-                  w={50}
-                  roundedTopRight={10}
-                  roundedBottomRight={10}
-                  h={90}
-                  ml="auto"
-                  justifyContent="center"
-                  bg={Colors.red}
-                  onPress={() => {
-                    props.removeFromCart(data.item);
-                  }}
-                >
-                  <Center alignItems="center" space={2}>
-                    <FontAwesome name="trash" size={24} color={Colors.white} />
-                  </Center>
-                </Pressable>
-              )}
+              renderHiddenItem={hiddenItem}
               showVerrticalScrollIndicator={false}
             />
           </Box>
@@ -111,16 +84,15 @@ const CartScreen = (props) => {
               h={45}
               alignItems="center"
             >
-              <Text>Total</Text>
+              <Text>Sub-Total</Text>
               <Button
                 px={10}
                 h={45}
-                rounded={50}
+                rounded={30}
                 bg={Colors.main}
                 _text={{ color: Colors.white, fontWeight: "semibold" }}
                 _pressed={{ bg: Colors.mainLight }}
-              >
-                ₦350
+              >₦{cartItems.reduce((a, c) => a + c.price * c.quantity, 0)}
               </Button>
             </HStack>
           </Center>
@@ -142,7 +114,7 @@ const CartScreen = (props) => {
   );
 };
 
-const renderItem = (data) => (
+const renderItem = ({ item }) => (
   <Pressable>
     <Box ml={6} mb={3}>
       <HStack
@@ -155,8 +127,8 @@ const renderItem = (data) => (
         <Center w="25%" bg={Colors.grey}>
           <Image
             source={{
-              uri: data.item.image
-                ? data.item.image
+              uri: item.image
+                ? item.image
                 : "https://cdn.pixabay.com/photo/2012/04/01/17/29/box-23649_960_720.png",
             }}
             alt={
@@ -169,10 +141,10 @@ const renderItem = (data) => (
         </Center>
         <VStack w="60%" px={2} space={3}>
           <Text isTruncated color={Colors.black} bold fontSize={11}>
-            {data.item.name}
+            {item.name}
           </Text>
           <Text bold color={Colors.lightBlack}>
-            ₦{data.item.price}
+            ₦{item.price}
           </Text>
         </VStack>
         <Center>
@@ -181,7 +153,7 @@ const renderItem = (data) => (
             _pressed={{ bg: Colors.main }}
             _text={{ color: Colors.white }}
           >
-            5
+            {item.quantity}
           </Button>
         </Center>
       </HStack>
@@ -189,20 +161,5 @@ const renderItem = (data) => (
   </Pressable>
 );
 
-// const hiddenItem =
 
-const mapStateToProps = (state) => {
-  const { cartItems } = state;
-  return {
-    cartItems: cartItems,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    clearCart: () => dispatch(actions.clearCart()),
-    removeFromCart: (item) => dispatch(actions.removeFromCart(item)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps, null)(CartScreen);
+export default CartScreen;
