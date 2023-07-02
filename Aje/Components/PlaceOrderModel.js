@@ -1,35 +1,43 @@
 import { Button, Center, HStack, Modal, Text, VStack } from "native-base";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Colors from "../color";
 import Buttone from "./Buttone";
 import { useNavigation } from "@react-navigation/native";
-
-const OrdersInfo = [
-  {
-    title: "Products",
-    price: 125.43,
-    color: "black",
-  },
-  {
-    title: "Shipping",
-    price: 34.54,
-    color: "black",
-  },
-  {
-    title: "Tax",
-    price: 10.32,
-    color: "black",
-  },
-  {
-    title: "Total Amount",
-    price: 543.12,
-    color: "main",
-  },
-];
+import { Store } from "../Redux/store";
 
 const PlaceOrderModel = () => {
   const navigation = useNavigation();
   const [showModel, setShowModel] = useState(false);
+  const { state } = useContext(Store);
+  const {
+    cart: { cartItems },
+  } = state;
+  const total = cartItems.reduce((a, c) => a + c.price * c.quantity, 0);
+  const tax = 0.12 * total;
+  const shipping = 1500;
+  const totalSum = total + tax + shipping;
+  const OrdersInfo = [
+    {
+      title: "Products",
+      price: total,
+      color: "black",
+    },
+    {
+      title: "Shipping",
+      price: shipping,
+      color: "black",
+    },
+    {
+      title: "Tax",
+      price: tax,
+      color: "black",
+    },
+    {
+      title: "Total Amount",
+      price: totalSum,
+      color: "main",
+    },
+  ];
   return (
     <Center>
       <Buttone
@@ -57,7 +65,7 @@ const PlaceOrderModel = () => {
                     color={i.color === "main" ? Colors.black : Colors.black}
                     bold
                   >
-                    $ {i.price}
+                    ₦ {i.price}
                   </Text>
                 </HStack>
               ))}

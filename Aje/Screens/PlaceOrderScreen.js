@@ -4,22 +4,36 @@ import OrderItem from "../Components/OrderItems";
 import PlaceOrderModel from "../Components/PlaceOrderModel";
 import { Ionicons, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import Colors from "../color";
+import { useContext } from "react";
+import { Store } from "../Redux/store";
+import AuthGlobal from "../Context/store/AuthGlobal";
 
 function PlaceOrderScreen() {
+  const { state } = useContext(Store);
+  const context = useContext(AuthGlobal);
+  const shipping = state.cart.shippingAddress;
+  const payment = state.cart.paymentMethod;
+  console.log(`In Place ${JSON.stringify(payment)}`);
   return (
     <Box bg={Colors.mainLight} flex={1} safeArea pt={6}>
       <Box>
         <ScrollView horizontal={true} showHorizontalScrollIndicator={false}>
           <OrderInfo
             title="CUSTOMER"
-            subTitle="ExtraMortal"
-            text="extramortal@ajeh.com"
+            subTitle={
+              context.stateUser.user.name
+                ? context.stateUser.user.name
+                : "Login"
+            }
+            text={
+              context.stateUser.user.email ? context.stateUser.user.email : " "
+            }
             icon={<FontAwesome name="user" size={30} color={Colors.white} />}
           />
           <OrderInfo
             title="SHIPPING INFO"
-            subTitle="Shipping Tanzania"
-            text="Pay Method: PayPal"
+            subTitle={shipping ? shipping.town : " "}
+            text={`Payment Method: ${payment}`}
             icon={
               <FontAwesome5
                 name="shipping-fast"
@@ -31,7 +45,7 @@ function PlaceOrderScreen() {
           <OrderInfo
             title="DELIVER TO"
             subTitle="Address"
-            text="No 44 Dallimore Strt"
+            text={shipping ? shipping.address : " siasia"}
             icon={<Ionicons name="location" size={30} color={Colors.white} />}
           />
         </ScrollView>

@@ -23,14 +23,30 @@ import { useContext, useEffect, useState } from "react";
 import baseURL from "../assets/common/baseUrl";
 
 import { Store } from "../Redux/store";
+import AuthGlobal from "../Context/store/AuthGlobal";
 
 const CartScreen = (props) => {
   const navigation = useNavigation();
+  const context = useContext(AuthGlobal);
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const {cart: { cartItems },} = state;
+  const {
+    cart: { cartItems },
+  } = state;
+
+  const handleCheckout = () => {
+    if (
+      context.stateUser.isAuthenticated === false ||
+      context.stateUser.isAuthenticated === null
+    ) {
+      props.navigation.navigate("Login");
+    } else {
+      props.navigation.navigate("Shipping");
+    }
+  };
+
   const removeItemHandler = (data) => {
-    ctxDispatch({ type: 'CART_REMOVE_ITEM', payload: data })
-  }
+    ctxDispatch({ type: "CART_REMOVE_ITEM", payload: data });
+  };
   const hiddenItem = ({ item }) => (
     <Pressable
       w={50}
@@ -92,13 +108,14 @@ const CartScreen = (props) => {
                 bg={Colors.main}
                 _text={{ color: Colors.white, fontWeight: "semibold" }}
                 _pressed={{ bg: Colors.mainLight }}
-              >₦{cartItems.reduce((a, c) => a + c.price * c.quantity, 0)}
+              >
+                ₦{cartItems.reduce((a, c) => a + c.price * c.quantity, 0)}
               </Button>
             </HStack>
           </Center>
           <Center mx={5}>
             <Buttone
-              onPress={() => navigation.navigate("Shipping")}
+              onPress={handleCheckout}
               bg={Colors.black}
               color={Colors.white}
               mt={10}
@@ -160,6 +177,5 @@ const renderItem = ({ item }) => (
     </Box>
   </Pressable>
 );
-
 
 export default CartScreen;

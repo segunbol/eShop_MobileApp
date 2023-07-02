@@ -6,8 +6,8 @@ import { useContext } from "react";
 import { Store } from "../Redux/store";
 
 function HomeSearch() {
-  const navigation = useNavigation()
-  const { state } = useContext(Store)
+  const navigation = useNavigation();
+  const { state } = useContext(Store);
   const { cart } = state;
   return (
     <HStack
@@ -43,9 +43,8 @@ function HomeSearch() {
             fontSize: "11px",
           }}
         >
-          {cart.cartItems.length > 0 && (
-            cart.cartItems.reduce((a, c) => a + c.quantity, 0 )
-          )}
+          {cart.cartItems.length > 0 &&
+            cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
         </Box>
       </Pressable>
     </HStack>

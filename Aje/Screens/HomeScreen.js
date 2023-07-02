@@ -11,10 +11,13 @@ import {
 import HomeSearch from "../Components/HomeSearch";
 import HomeProducts from "../Components/HomeProducts";
 
+import Categories from "./CategoryScreen.js";
+
 function HomeScreen() {
   return (
     <Box flex={1} bg={"pink.100"}>
       <HomeSearch />
+      <Categories />
       <HomeProducts />
     </Box>
   );

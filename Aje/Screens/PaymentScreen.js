@@ -1,3 +1,5 @@
+import { useState, useContext } from "react";
+import { Store } from "../Redux/store";
 import {
   Box,
   Center,
@@ -5,16 +7,16 @@ import {
   HStack,
   Image,
   Input,
+  Pressable,
   ScrollView,
   Spacer,
   Text,
   VStack,
 } from "native-base";
-import React from "react";
-import Colors from "../color";
-import Buttone from "../Components/Buttone";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import Colors from "../color";
+import Buttone from "../Components/Buttone";
 
 const PaymentMethods = [
   {
@@ -24,7 +26,7 @@ const PaymentMethods = [
   },
   {
     image: require("../assets/images/wallet.png"),
-    alt: "wallet",
+    alt: "App Wallet",
     icon: "Ionicons",
   },
   {
@@ -33,57 +35,82 @@ const PaymentMethods = [
     icon: "FontAwesome",
   },
 ];
+
 function PaymentScreen() {
   const navigation = useNavigation();
+  const { state, dispatch } = useContext(Store);
+  const { paymentMethod } = state;
+
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
+    paymentMethod || null
+  );
+
+  const handlePaymentMethodSelect = (method) => {
+    setSelectedPaymentMethod(method);
+  };
+
+  const handleContinue = () => {
+    dispatch({ type: "SAVE_PAYMENT_METHOD", payload: selectedPaymentMethod });
+    console.log(state);
+    navigation.navigate("PlaceOrder");
+  };
+
   return (
     <Box flex={1} safeArea bg={Colors.main} py={5}>
-      {/*Header*/}
       <Center pb={15}>
         <Text color={Colors.mainLight} fontSize={14} bold>
           PAYMENT METHOD
         </Text>
       </Center>
-      {/* SELECTION */}
       <Box h="full" bg={Colors.mainLight} px={5}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <VStack space={6} mt={5}>
-            {PaymentMethods.map((i, index) => (
-              <HStack
+            {PaymentMethods.map((method, index) => (
+              <Pressable
                 key={index}
-                alignItems="center"
-                bg={Colors.white}
-                px={3}
-                py={1}
-                justifyContent="space-between"
-                rounded={10}
+                onPress={() => handlePaymentMethodSelect(method.alt)}
               >
-                <Box>
-                  <Image source={i.image} alt={i.alt} w={60} h={50} />
-                </Box>
-                {i.icon === "Ionicons" ? (
-                  <Ionicons
-                    name="checkmark-circle"
-                    size={30}
-                    color={Colors.main}
-                  />
-                ) : (
-                  <FontAwesome
-                    name="circle-thin"
-                    size={30}
-                    color={Colors.main}
-                  />
-                )}
-              </HStack>
+                <HStack
+                  alignItems="center"
+                  bg={Colors.white}
+                  px={3}
+                  py={1}
+                  justifyContent="space-between"
+                  rounded={10}
+                >
+                  <Box>
+                    <Image
+                      source={method.image}
+                      alt={method.alt}
+                      w={60}
+                      h={50}
+                    />
+                  </Box>
+                  {selectedPaymentMethod === method.alt ? (
+                    <Ionicons
+                      name="checkmark-circle"
+                      size={30}
+                      color={Colors.main}
+                    />
+                  ) : (
+                    <FontAwesome
+                      name="circle-thin"
+                      size={30}
+                      color={Colors.main}
+                    />
+                  )}
+                </HStack>
+              </Pressable>
             ))}
             <Buttone
-              onPress={() => navigation.navigate("PlaceOrder")}
+              onPress={handleContinue}
               bg={Colors.main}
               color={Colors.mainLight}
             >
               CONTINUE
             </Buttone>
             <Text italic textAlign="center">
-              Payment Method is <Text bold>"In-App Wallet"</Text> by default{" "}
+              Payment Method is <Text bold>"In-App Wallet"</Text> by default
             </Text>
           </VStack>
         </ScrollView>

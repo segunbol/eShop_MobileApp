@@ -7,32 +7,57 @@ import {
   Text,
   VStack,
 } from "native-base";
-import React from "react";
+import React, { useContext, useState } from "react";
 import Colors from "../color";
 import Buttone from "../Components/Buttone";
 import { useNavigation } from "@react-navigation/native";
+import { Store } from "../Redux/store";
 
 const ShippingInputs = [
   {
     label: "ENTER COUNTRY",
     type: "text",
+    key: "country", // Add a key property to identify the input field
   },
   {
     label: "ENTER STATE",
     type: "text",
+    key: "state",
   },
   {
     label: "ENTER TOWN",
     type: "text",
+    key: "town",
   },
   {
     label: "ENTER ADDRESS",
     type: "text",
+    key: "address",
   },
 ];
 
 function ShippingScreen() {
   const navigation = useNavigation();
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const [shippingAddress, setShippingAddress] = useState({
+    country: "",
+    state: "",
+    town: "",
+    address: "",
+  });
+
+  const handleChange = (key, value) => {
+    setShippingAddress((prevAddress) => ({
+      ...prevAddress,
+      [key]: value,
+    }));
+  };
+
+  const shippingHandler = () => {
+    ctxDispatch({ type: "SAVE_SHIPPING_ADDRESS", payload: shippingAddress });
+    navigation.navigate("PaymentScreen");
+  };
+
   return (
     <Box flex={1} safeArea bg={Colors.main} py={5}>
       {/*Header*/}
@@ -45,31 +70,35 @@ function ShippingScreen() {
       <Box h="full" bg={Colors.white} px={5}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <VStack space={6} mt={5}>
-            {ShippingInputs.map((i, index) => (
+            {ShippingInputs.map((input, index) => (
               <FormControl key={index}>
                 <FormControl.Label
                   _text={{ fontSize: "12px", fontWeight: "bold" }}
                 >
-                  {i.label}
+                  {input.label}
                 </FormControl.Label>
                 <Input
                   borderWidth={1}
                   borderColor={Colors.main}
-                  type={i.type}
+                  type={input.type}
                   py={4}
-                  bg={Colors.grey}
-                  color={Colors.mainLight}
+                  bg={Colors.mainLight}
+                  color={Colors.grey}
                   _focus={{
                     bg: Colors.greyLight,
                     color: Colors.black,
                     borderWidth: 1,
                     borderColor: Colors.main,
                   }}
+                  // Store the input value in the state when changed
+                  onChangeText={(value) => handleChange(input.key, value)}
+                  // Set the input value from the state
+                  value={shippingAddress[input.key]}
                 />
               </FormControl>
             ))}
             <Buttone
-              onPress={() => navigation.navigate("PaymentScreen")}
+              onPress={shippingHandler}
               bg={Colors.main}
               color={Colors.mainLight}
             >

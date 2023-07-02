@@ -9,15 +9,20 @@ import {
   Text,
   VStack,
 } from "native-base";
-import React from "react";
+import React, { useContext } from "react";
 import Colors from "../color";
-import products from "../Components/data/Products"
+import { Store } from "../Redux/store";
 
 const OrderItem = () => {
+  const { state } = useContext(Store);
+  const {
+    cart: { cartItems },
+  } = state;
+
   return (
     <FlatList
       showVerticalScreenIndicator={false}
-      data={products.slice(0, 3)}
+      data={cartItems}
       keyExtractor={(item) => item._id}
       renderItem={({ item }) => (
         <Pressable>
@@ -39,10 +44,10 @@ const OrderItem = () => {
                 />
               </Center>
               <VStack w="60%" px={2}>
-                <Text isTruncated  bold fontSize={14}>
+                <Text isTruncated bold fontSize={14}>
                   {item.name}
                 </Text>
-                <Text isTruncated  mt={2} bold>
+                <Text isTruncated mt={2} bold>
                   ${item.price}
                 </Text>
               </VStack>
@@ -52,7 +57,7 @@ const OrderItem = () => {
                   _pressed={{ bg: Colors.orange }}
                   _text={{ color: Colors.white }}
                 >
-                  5
+                  {item.quantity}
                 </Button>
               </Center>
             </HStack>

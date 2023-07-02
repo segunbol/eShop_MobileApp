@@ -13,29 +13,7 @@ function ProflleScreen(props) {
   const navigation = useNavigation()
   const context = useContext(AuthGlobal)
   const [userProfile, setUserProfile] = useState()
-  // console.log(JSON.stringify(context.stateUser.user))
-
   
-  // useFocusEffect(
-  //     useCallback(() => {
-      
-  //     // 644dac31ebb51d9c0518d150 context.stateUser.user.sub
-  //     AsyncStorage.getItem("jwt")
-  //         .then((res) => {
-  //             axios
-  //                 .get(`${baseURL}users/${context.stateUser.user.userId}`, {
-  //                     headers: { Authorization: `Bearer ${res}` },
-  //                 })
-  //                 .then((user) => setUserProfile(user.data))
-  //         })
-  //         .catch((error) => console.log(error))
-          
-      
-  //     return () => {
-  //         setUserProfile();
-  //     }
-
-  // }, [context.stateUser.isAuthenticated]))
   
   return (
     <>
