@@ -1,17 +1,25 @@
 import { Button, Center, HStack, Modal, Text, VStack } from "native-base";
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import Colors from "../color";
 import Buttone from "./Buttone";
 import { useNavigation } from "@react-navigation/native";
 import { Store } from "../Redux/store";
+import AuthGlobal from "../Context/store/AuthGlobal";
+import axios from "axios"; // Import Axios for making API requests
+import baseURL from "../assets/common/baseUrl";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PlaceOrderModel = () => {
-  const navigation = useNavigation();
+  const context = useContext(AuthGlobal);
+  const navigation = useNavigation(); // Move useNavigation hook inside the component
   const [showModel, setShowModel] = useState(false);
-  const { state } = useContext(Store);
+  const { state, dispatch: ctxDispatch } = useContext(Store);
   const {
-    cart: { cartItems },
+    cart: { cartItems }
   } = state;
+  const check = state.cart
+  const {shippingAddress} = state.cart
+  const paymentMethod = state.cart.paymentMethod
   const total = cartItems.reduce((a, c) => a + c.price * c.quantity, 0);
   const tax = 0.12 * total;
   const shipping = 1500;
@@ -38,6 +46,51 @@ const PlaceOrderModel = () => {
       color: "main",
     },
   ];
+
+  const placeOrderHandler = async () => {
+    const userId = context.stateUser.user.userId;
+    const token = await AsyncStorage.getItem('jwt')
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    };
+    // console.log(`In PlaceorderMosdel ${JSON.stringify(state)}`);
+
+    // Send a DELETE request to clear the cart on the backend
+    try {
+      await axios.post(`${baseURL}orders`, 
+      {
+        orderItems: cartItems,
+        shippingAddress: shippingAddress,
+        paymentMethod: paymentMethod,
+        itemsPrice: total,
+        shippingPrice: shipping,
+        taxPrice: tax,
+        totalPrice: totalSum,
+      }, {headers});
+      console.log("Order Created");
+    } catch (error) {
+      console.error("Error creating order:", error.message);
+    }
+    try {
+      await axios.delete(`${baseURL}cartitems/${userId}`);
+      console.log("Cart Item Cleared");
+    } catch (error) {
+      console.error("Error Clearing Cart:", error.message);
+    }
+
+    // Dispatch the "CART_CLEAR" action to clear the cart in the store
+    ctxDispatch({
+      type: "CART_CLEAR",
+    });
+    ctxDispatch({
+      type: "ADD_TO_ORDERED",
+      payload: { check },
+    });
+    navigation.navigate("Order");
+    // setShowModel(false);
+  };
+
   return (
     <Center>
       <Buttone
@@ -79,10 +132,7 @@ const PlaceOrderModel = () => {
               _text={{
                 color: Colors.white,
               }}
-              onPress={() => {
-                navigation.navigate("Order");
-                setShowModel(false);
-              }}
+              onPress={placeOrderHandler}
               _pressed={{
                 bg: Colors.main,
               }}

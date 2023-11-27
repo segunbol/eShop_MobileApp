@@ -1,5 +1,6 @@
 import React from 'react';
-import { TextInput, StyleSheet } from 'react-native'
+import { TextInput, StyleSheet } from 'react-native';
+import Colors from '../../color';
 
 const Input = (props) => {
     return (
@@ -23,12 +24,12 @@ const styles = StyleSheet.create({
     input: {
         width: '80%',
         height: 60,
-        backgroundColor: 'white',
+        backgroundColor: Colors.white,
         margin: 10,
         borderRadius: 20,
         padding: 10,
         borderWidth: 2,
-        borderColor: 'orange'
+        borderColor: Colors.main
     },
 });
 

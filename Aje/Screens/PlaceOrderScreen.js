@@ -13,7 +13,7 @@ function PlaceOrderScreen() {
   const context = useContext(AuthGlobal);
   const shipping = state.cart.shippingAddress;
   const payment = state.cart.paymentMethod;
-  console.log(`In Place ${JSON.stringify(payment)}`);
+  
   return (
     <Box bg={Colors.mainLight} flex={1} safeArea pt={6}>
       <Box>

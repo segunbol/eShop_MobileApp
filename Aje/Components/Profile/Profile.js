@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useCallback, useContext, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import AuthGlobal from '../../Context/store/AuthGlobal';
-import { AsyncStorage } from "react-native"
+import  AsyncStorage  from "@react-native-async-storage/async-storage"
 import { logoutUser } from "../../Context/Actions/Auth.actions"
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import baseURL from '../../assets/common/baseUrl';
@@ -15,17 +15,19 @@ const Profile = (props) => {
   const context = useContext(AuthGlobal)
   const [userProfile, setUserProfile] = useState()
 
-  useFocusEffect(
-      useCallback(() => {
-      if (
-          context.stateUser.isAuthenticated === false || 
-          context.stateUser.isAuthenticated === null
-      ) {
-          navigation.navigate("Loginn")
-      }
+  // useFocusEffect(
+  //     useCallback(() => {
+  //     if (
+  //         context.stateUser.isAuthenticated === false || 
+  //         context.stateUser.isAuthenticated === null
+  //     ) {
+  //         navigation.navigate("Login")
+  //     }else {
+  //       navigation.navigate("Profiledd")
+  //     }
  
 
-  }, [context.stateUser.isAuthenticated]))
+  // }, [context.stateUser.isAuthenticated]))
 
   return (
     <View style={styles.container}>

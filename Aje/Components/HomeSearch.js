@@ -2,13 +2,21 @@ import { Box, HStack, Input, Pressable, Text } from "native-base";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import Colors from "../color";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Store } from "../Redux/store";
 
 function HomeSearch() {
   const navigation = useNavigation();
   const { state } = useContext(Store);
   const { cart } = state;
+  const [searchQuery, setSearchQuery] = useState("");
+  console.log(searchQuery)
+
+  const handleSearch = () => {
+    if (searchQuery.trim() !== "") {
+      navigation.navigate("SearchScreen", { query: searchQuery });
+    }
+  };
   return (
     <HStack
       space={3}
@@ -25,12 +33,15 @@ function HomeSearch() {
         bg={"white"}
         type="search"
         h={12}
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        onSubmitEditing={handleSearch} // Called when Enter key is pressed
         borderWidth={0}
         _focus={{ bg: "amber.100" }}
         variant="filled"
       />
       <Pressable ml={3} onPress={() => navigation.navigate("Cart")}>
-        <FontAwesome5 name="shopping-basket" size={24} color={"black"} />
+        <FontAwesome5 name="shopping-basket" size={24} color={Colors.black} />
         <Box
           px={1}
           rounded="full"

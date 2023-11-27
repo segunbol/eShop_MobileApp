@@ -18,7 +18,7 @@ const Register = (props) => {
   const [street, setStreet] = useState("")
   const [apartment, setApartment] = useState("")
   const [zip, setZip] = useState("")
-  const [city, setCity] = useState("")
+  const [city, setCity] = useState("") 
   const [country, setCountry] = useState("")
   const [error, setError] = useState("");
 
@@ -41,7 +41,7 @@ const Register = (props) => {
       country : country
     };
     axios
-      .post(`${baseURL}users/register`, user)
+      .post(`${baseURL}users/signup`, user)
       .then((res) => {
         if (res.status == 200) {
           Toast.show({
@@ -71,7 +71,7 @@ const Register = (props) => {
       extraHeight={200}
       enableOnAndroid={true}
     >
-      <FormContainer title={"Update"}>
+      <FormContainer title={"Register"}>
         <Input
           placeholder={"Email"}
           name={"email"}

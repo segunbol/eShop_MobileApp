@@ -16,14 +16,16 @@ import { useNavigation } from "@react-navigation/native";
 import { Store } from "../Redux/store";
 
 const OrderModel = () => {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const [showModel, setShowModel] = useState(false);
   const { state } = useContext(Store);
-  const {cart: { cartItems },} = state;
-  const total = cartItems.reduce((a, c) => a + c.price * c.quantity, 0)
-  const tax = 0.12 * total
-  const shipping = 1500
-  const totalSum = total + tax + shipping
+  const {
+    ordered: { orderedItems },
+  } = state;
+  const total = cartItems.reduce((a, c) => a + c.price * c.quantity, 0);
+  const tax = 0.12 * total;
+  const shipping = 1500;
+  const totalSum = total + tax + shipping;
   const OrdersInfo = [
     {
       title: "Products",
@@ -105,13 +107,14 @@ const OrderModel = () => {
                 color: Colors.white,
               }}
               onPress={() => {
-                navigation.navigate("Home")
-                setShowModel(false)}}
+                navigation.navigate("Home");
+                setShowModel(false);
+              }}
               _pressed={{
                 bg: Colors.main,
               }}
             >
-               ORDER PAYMENT DETAILS
+              ORDER PAYMENT DETAILS
             </Button>
           </Modal.Footer>
         </Modal.Content>

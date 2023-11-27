@@ -115,15 +115,15 @@ const OrderCard = (props) => {
             py={5}
             px={2}
           >
-            <Text fontSize={9} color={Colors.red} isTruncated >
+            {/* <Text fontSize={9} color={Colors.red} isTruncated >
                 {props.id.toString().slice(0, 6)}
-            </Text>
+            </Text> */}
             <Text fontSize={12} bold color={Colors.white} isTruncated >
                 {statusText} {orderStatus}
             </Text>
-            <Text fontSize={9} color={Colors.white}  isTruncated >
+            {/* <Text fontSize={9} color={Colors.white}  isTruncated >
                 {props.dateOrdered.split("T")[0]}
-            </Text>
+            </Text> */}
             <Button px={5} py={1} rounded={50} bg={Colors.main} _text={{
                 color:Colors.mainLight
             }}>

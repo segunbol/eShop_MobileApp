@@ -19,53 +19,52 @@ import AuthGlobal from "../Context/store/AuthGlobal";
 import { Store } from "../Redux/store";
 import axios from "axios";
 import baseURL from "../assets/common/baseUrl";
+import Spinner from "react-native-loading-spinner-overlay";
 
-function SingleProductScreen(props) {
+function SingleProductScreen() {
   const route = useRoute();
-  const [datas, setDatas] = useState(route.params.datas);
+  const [datas, setDatas] = useState(route.params.data);
+  const product = route.params.data;
+  
   const context = useContext(AuthGlobal);
-  const product = datas;
+  // const product = datas;
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart } = state;
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(1);
   const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(false);
+  // console.log(route)
+
   const handleValueChange = (newValue) => {
     setValue(newValue);
   };
-  useEffect(() => {
-    if (!datas) {
-      // Fetch the data using the ID from the route params
-      axios
-        .get(`${baseURL}products/${route.params?.id}`)
-        .then((res) => {
-          setDatas(res.data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-    return () => {
-      setDatas([]);
-    };
-  }, []);
 
   const addToCartHandler = async () => {
-    const existItem = cart.cartItems.find((x) => x._id === product.id);
-    const quantity = existItem ? existItem.quantity + value : 1;
+    const userId = context.stateUser.user.userId;
+    const existItem = cart.cartItems.find((x) => x.id === product.id);
+    const quantity = existItem ? existItem.quantity + value : value;
     const { data } = await axios.get(`${baseURL}products/${product.id}`);
     if (data.countInStock < quantity) {
       window.alert("Sorry, Product is out of stock");
       return;
-    }
+    }  
     ctxDispatch({
       type: "CART_ADD_ITEM",
-      payload: { ...product, quantity },
+      payload: { ...product, quantity, userId },
     });
     navigation.navigate("Cart");
   };
 
   return (
     <Box safeArea flex={1} bg="white">
+      <Spinner
+        visible={isLoading}
+        textContent={"Loading..."}
+        color={Colors.main}
+        size={"large"}
+        overlayStyle={{ backgroundColor: "black", opacity: 0.5 }}
+        // overlayColor={Colors.mainLight}
+      />
       <ScrollView px={5} showVerticalScrollIndicator={false}>
         <Image
           source={{ uri: datas.image }}

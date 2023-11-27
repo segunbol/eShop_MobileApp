@@ -1,10 +1,16 @@
-import { createContext, useReducer } from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
+import axios from "axios";
+import baseURL from "../assets/common/baseUrl";
+import AuthGlobal from "../Context/store/AuthGlobal";
 
 export const Store = createContext();
 
 const initialState = {
   cart: {
     cartItems: [],
+  },
+  ordered: {
+    orderedItems: [],
   },
 };
 
@@ -13,21 +19,72 @@ function reducer(state, action) {
     case "CART_ADD_ITEM":
       const newItem = action.payload;
       const existItem = state.cart.cartItems.find(
-        (item) => item._id === newItem._id
+        (item) => item.id === newItem.id
       );
-      const cartItems = existItem
-        ? state.cart.cartItems.map((item) =>
-            item._id === existItem._id ? newItem : item
-          )
-        : [...state.cart.cartItems, newItem];
+      if (existItem) {
+        let cartItems = state.cart.cartItems.map((item) =>
+          item.id === existItem.id
+            ? { ...item, quantity: newItem.quantity }
+            : item
+        );
+        axios
+          .put(`${baseURL}cartitems/${existItem.userId}`, newItem)
+          .then((res) => {
+            console.log("Cart item updated successfully:", res.data);
+          })
+          .catch((error) => {
+            console.error("Error updating cart item:", error);
+          });
+
+        return { ...state, cart: { ...state.cart, cartItems } };
+      } else {
+        // console.log(`This is New Item ${JSON.stringify(newItem)}`);
+        axios
+          .post(`${baseURL}cartitems`, newItem)
+          .then((res) => {
+            console.log("Cart items posted successfully:", res.data);
+          })
+          .catch((error) => {
+            console.error("Error posting cart items:", error);
+          });
+        return {
+          ...state,
+          cart: {
+            ...state.cart,
+            cartItems: [...state.cart.cartItems, newItem],
+          },
+        };
+      }
+
+    case "RETRIEVE_CART_ITEMS":
+      cartItems = action.payload;
+      // console.log(`Coming from Retrieve Initial State ${JSON.stringify(initialState)}`);
+      // console.log(`Coming from Retrieve Initial State ${JSON.stringify(cartItems)}`);
       return { ...state, cart: { ...state.cart, cartItems } };
 
     case "CART_REMOVE_ITEM":
-      const itemToRemove = action.payload;
+      console.log(`This is ClearCart ${JSON.stringify(action.payload)}`);
+      let itemToRemove = action.payload;
       const updatedCartItems = state.cart.cartItems.filter(
-        (item) => item._id !== itemToRemove._id
+        (item) => item.id !== itemToRemove.id
       );
-      return { ...state, cart: { ...state.cart, cartItems: updatedCartItems } };
+      // Make a delete request to remove the product from the backend
+      axios
+        .delete(`${baseURL}cartitems/${itemToRemove.userId}/${itemToRemove.id}`)
+        .then((res) => {
+          console.log("Product removed from cart successfully:", res.data);
+        })
+        .catch((error) => {
+          console.error("Error removing product from cart:", error.message);
+        });
+      return {
+        ...state,
+        cart: { ...state.cart, cartItems: updatedCartItems },
+      };
+
+    case "CART_CLEAR":
+      itemToRemove = action.payload;
+      return { ...state, cart: { ...state.cart, cartItems: [] } };
 
     case "SAVE_SHIPPING_ADDRESS":
       return {
@@ -47,6 +104,10 @@ function reducer(state, action) {
         },
       };
 
+    case "ADD_TO_ORDERED":
+      const orderedItems = action.payload;
+      console.log(`Add to Ordered ${orderedItems}`)
+      return { ...state, ordered: { ...state.ordered, orderedItems } };
     default:
       return state;
   }

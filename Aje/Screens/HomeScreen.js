@@ -11,16 +11,22 @@ import {
 import HomeSearch from "../Components/HomeSearch";
 import HomeProducts from "../Components/HomeProducts";
 
-import Categories from "./CategoryScreen.js";
+import Categories from "../Components/CategoryScreen.js";
+import Colors from "../color";
 
 function HomeScreen() {
   return (
-    <Box flex={1} bg={"pink.100"}>
+    <Box flex={1} bg={Colors.mainLight}>
       <HomeSearch />
-      <Categories />
-      <HomeProducts />
+      <Box flex={0.40}>
+        <Categories />
+      </Box>
+      <Box flex={0.60}>
+        <HomeProducts />
+      </Box>
     </Box>
   );
 }
+
 
 export default HomeScreen;

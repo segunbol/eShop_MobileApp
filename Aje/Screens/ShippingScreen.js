@@ -15,6 +15,16 @@ import { Store } from "../Redux/store";
 
 const ShippingInputs = [
   {
+    label: "ENTER RECEIVER NAME",
+    type: "text",
+    key: "fullName", // Add a key property to identify the input field
+  },
+  {
+    label: "ENTER PHONE NO",
+    type: "text",
+    key: "phone", // Add a key property to identify the input field
+  },
+  {
     label: "ENTER COUNTRY",
     type: "text",
     key: "country", // Add a key property to identify the input field
@@ -22,12 +32,12 @@ const ShippingInputs = [
   {
     label: "ENTER STATE",
     type: "text",
-    key: "state",
+    key: "city",
   },
   {
     label: "ENTER TOWN",
     type: "text",
-    key: "town",
+    key: "postalCode",
   },
   {
     label: "ENTER ADDRESS",
@@ -39,22 +49,24 @@ const ShippingInputs = [
 function ShippingScreen() {
   const navigation = useNavigation();
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const [shippingAddress, setShippingAddress] = useState({
+  const [shippingDetails, setShippingDetails] = useState({
+    fullName:"",
+    phone:"",
     country: "",
-    state: "",
-    town: "",
+    city: "",
+    postalCode: "",
     address: "",
   });
 
   const handleChange = (key, value) => {
-    setShippingAddress((prevAddress) => ({
+    setShippingDetails((prevAddress) => ({
       ...prevAddress,
       [key]: value,
     }));
   };
 
   const shippingHandler = () => {
-    ctxDispatch({ type: "SAVE_SHIPPING_ADDRESS", payload: shippingAddress });
+    ctxDispatch({ type: "SAVE_SHIPPING_ADDRESS", payload: shippingDetails });
     navigation.navigate("PaymentScreen");
   };
 
@@ -93,7 +105,7 @@ function ShippingScreen() {
                   // Store the input value in the state when changed
                   onChangeText={(value) => handleChange(input.key, value)}
                   // Set the input value from the state
-                  value={shippingAddress[input.key]}
+                  value={shippingDetails[input.key]}
                 />
               </FormControl>
             ))}

@@ -3,22 +3,21 @@ import React from "react"
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Login from '../Screens/User/Login'
 import Register from '../Screens/User/Register'
-import UserProfile from '../Screens/User/UserProfile'
 import ProfileScreen from '../Screens/ProflleScreen'
-import LoginScreen from "../Screens/LoginScreen"
+
 
 const Stack = createNativeStackNavigator();
 
 function MyStack() {
     return (
         <Stack.Navigator>
-            <Stack.Screen 
-                name="Loginn"
+            {/* <Stack.Screen 
+                name="Login"
                 component={Login}
                 options={{
                     headerShown: false
                 }}
-            />
+            /> */}
             <Stack.Screen 
             name="Profiledd"
             component={ProfileScreen}

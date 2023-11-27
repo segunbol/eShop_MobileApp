@@ -8,6 +8,7 @@ import {
   Image,
   Pressable,
   Text,
+  View,
 } from "native-base";
 import { FontAwesome } from "@expo/vector-icons";
 import { SwipeListView } from "react-native-swipe-list-view";
@@ -32,7 +33,7 @@ const CartScreen = (props) => {
   const {
     cart: { cartItems },
   } = state;
-
+  // console.log(cartItems)
   const handleCheckout = () => {
     if (
       context.stateUser.isAuthenticated === false ||
@@ -109,7 +110,14 @@ const CartScreen = (props) => {
                 _text={{ color: Colors.white, fontWeight: "semibold" }}
                 _pressed={{ bg: Colors.mainLight }}
               >
-                ₦{cartItems.reduce((a, c) => a + c.price * c.quantity, 0)}
+                <View style={{ flexDirection: 'row'}}>
+                  <Text style={{ color: 'white', fontWeight: 'bold',}} fontSize={20}>
+                    ₦
+                  </Text>
+                  <Text style={{ color: 'white', fontWeight: 'bold',}} fontSize={20}>
+                    {cartItems.reduce((a, c) => a + c.price * c.quantity, 0)}
+                  </Text>
+                </View>
               </Button>
             </HStack>
           </Center>

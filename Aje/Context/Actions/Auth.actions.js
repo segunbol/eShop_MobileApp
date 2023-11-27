@@ -1,12 +1,12 @@
 import jwt_decode from "jwt-decode"
-import { AsyncStorage } from "react-native"
+import AsyncStorage  from "@react-native-async-storage/async-storage"
 import Toast from "react-native-toast-message"
 import baseURL from "../../assets/common/baseUrl"
 
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
 
 export const  loginUser = (user, dispatch) => {
-    fetch(`${baseURL}users/login`, {
+    fetch(`${baseURL}users/signin`, {
         method: "POST",
         body: JSON.stringify(user),
         headers: {
@@ -15,11 +15,14 @@ export const  loginUser = (user, dispatch) => {
         },
     })
     .then((res) => res.json())
-    .then((data) => {
+    .then(async (data) => {
         if (data) {
             const token = data.token;
-            AsyncStorage.setItem("jwt", token)
+            // console.log(token)
+            await AsyncStorage.setItem("jwt", token)
+            console.log(token)
             const decoded = jwt_decode(token)
+            console.log(decoded)
             dispatch(setCurrentUser(decoded, user))
         } else {
            logoutUser(dispatch)
@@ -36,8 +39,8 @@ export const  loginUser = (user, dispatch) => {
     });
 };
 
-export const getUserProfile = (id, user) => {
-    fetch(`${baseURL}users/${id}`, {
+export const getUserProfile = (_id, user) => {
+    fetch(`${baseURL}users/${_id}`, {
         method: "GET",
         body: JSON.stringify(user),
         headers: {
@@ -50,11 +53,12 @@ export const getUserProfile = (id, user) => {
 }
 
 export const logoutUser = (dispatch) => {
-    // AsyncStorage.removeItem("jwt");
+    AsyncStorage.removeItem("jwt");
     dispatch(setCurrentUser({}))
 }
 
 export const setCurrentUser = (decoded, user) => {
+    console.log(decoded)
     return {
         type: SET_CURRENT_USER,
         payload: decoded,

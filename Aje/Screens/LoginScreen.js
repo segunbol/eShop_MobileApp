@@ -146,7 +146,7 @@ const LoginScreen= (props)=> {
 
   useEffect(() => {
     if (context.stateUser.isAuthenticated === true) {
-      navigation.navigate("ProfileScreen");
+      navigation.navigate("Profiledd");
     }
   }, [context.stateUser.isAuthenticated]);
 

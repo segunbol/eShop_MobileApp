@@ -1,8 +1,13 @@
 import { Center, Heading, Text } from "native-base";
-import React from "react";
+import React, { useContext } from "react";
 import Colors from "../color";
+import { Store } from "../Redux/store";
 
 const OrderInfo = ({ icon, title, subTitle, text, success, danger }) => {
+  const { state } = useContext(Store);
+  const {
+    ordered: { orderedItems },
+  } = state;
   return (
     <Center
       bg={Colors.white}
